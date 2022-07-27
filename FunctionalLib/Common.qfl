@@ -1,0 +1,69 @@
+﻿Public Function CreateExcelObject(strExcelFilePath,strSheetName,intExcelRowCount,intExcelColumnCount,objExcelSheet,objExcelWorkbook)
+	Set objExcelObject = CreateObject("Excel.Application")
+	Set objExcelWorkbook=objExcelObject.Workbooks.Open (strExcelFilePath)
+	Set objExcelSheet = objExcelObject.WorkSheets(strSheetName) 
+	Set excelUsedRange=objExcelSheet.usedrange
+	intExcelRowCount = excelUsedRange.rows.count
+	intExcelColumnCount=excelUsedRange.Columns.count
+End Function
+
+Public Function PressEnter()
+'	Call FuncInit()
+	stepName = "Press Enter "
+	val= "Enter key"
+	If SAPwindowObject1.Exist Then
+		  SAPwindowObject1.SendKey ENTER
+		  Call ReporterFunction("2"," Press Enter Key","Enter Key Pressed ")
+		  status = "DONE"
+	ElseIf SAPwindowObject.Exist Then
+			  SAPwindowObject.SendKey ENTER
+			  Call ReporterFunction("2"," Press Enter Key","Enter Key Pressed ")
+			  status = "DONE"
+		Else 
+	End If
+	Call FuncEnd (startTime,status,val,strErrmsg,stepName,strScreenshotName)
+End Function
+'**********************************************************************************
+'End Function - PressEnter()
+'***********************************************************************************
+
+'***********************************************************************************
+'Function ClickButton(tooltip)
+'***********************************************************************************
+Public Function ClickButton(tooltip)
+'	Call FuncInit()
+	Dim objButton
+	strStepName = "Click " & "'" & tooltip & "'" & " Button"
+	If tooltip <> "" Then		
+		Set objButton=SAPGuiSession(sessionObject).sapguiwindow(windowObject).SAPGuiButton("guicomponenttype:=40","tooltip:="&tooltip)
+		If  objButton.Exist  then 
+			If VerifyObjectStatus(objButton) Then
+				objButton.Click
+'				Call ReporterFunction("2","Button Component","Button Name:"&tooltip&"Clicked" )
+				strStatus = "DONE"
+			Else
+'				Call ReporterFunction("1","Button Component"," Button Is Not Enabled. Check the --ClickButton-- Function Call")
+				strErrMsg = "Button Is Not Enabled. Check the --ClickButton-- Function Call"
+				strStatus = "FAIL"
+				defectFlag =True
+				strScreenshotName = CaptureSAPObject(SAPwindowObject) 
+			End If
+		Else
+'			Call ReporterFunction("1","Button Component","Button Name:"&tooltip& vbNewLine &" Object Missing" )
+			strErrMsg = tooltip&"  Button Not found"
+			strStatus = "FAIL"
+			strScreenshotName = CaptureSAPObject(SAPwindowObject) 
+		End if
+	Else
+'	     Call ReporterFunction("1","Button Component"," Function Parameter Not Passed Properly. Check the --ClickButton-- Function Call")
+	     strErrMsg = "Function Parameter Not Passed Properly. Check the --ClickButton-- Function Call"
+	     strStatus = "FAIL"
+	End If
+'	Call FuncEnd (startTime,strStatus,tooltip,strErrMsg,strStepName,strScreenshotName)
+	Set objButton = Nothing
+End Function
+'************************************************************************************
+'End Function - ClickButton
+'********************************
+
+
